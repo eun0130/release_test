@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
-  "name": "Release Test",
+  "name": "Atlas WBS",
   "version": "0.0.0",
-  "description": "Empty extension for testing the GitHub release pipeline",
+  "description": "Atlas WBS Chrome extension with self-notifying GitHub release updates",
   "permissions": ["alarms", "storage"],
   "host_permissions": ["https://api.github.com/*"],
   "background": {

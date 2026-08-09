@@ -22,10 +22,10 @@ jobs:
           cat manifest.json
 
       - name: Build zip
-        run: zip -r release_test-${GITHUB_REF_NAME}.zip manifest.json app.js popup.html popup.js update.ps1 update.vbs setup-auto-update.bat
+        run: zip -r atlasWbs-${GITHUB_REF_NAME}.zip manifest.json app.js popup.html popup.js config.default.json update.ps1 update.vbs README.md
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
-          files: release_test-*.zip
+          files: atlasWbs-*.zip
           generate_release_notes: true

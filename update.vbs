@@ -1,4 +1,4 @@
-' Double-click me: updates the extension silently (no window).
+' Double-click me: updates Atlas WBS silently (no window).
 ' A Windows notification appears when the update is done.
 Dim shell, scriptDir
 Set shell = CreateObject("WScript.Shell")

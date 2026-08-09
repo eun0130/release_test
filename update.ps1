@@ -1,8 +1,21 @@
 ﻿param([switch]$Silent)
 
 $ErrorActionPreference = "Stop"
-$repo = "eun0130/release_test"
 $dir = Split-Path -Parent $MyInvocation.MyCommand.Path
+
+# Layered config: local config.json (kept across updates) overrides the
+# shipped config.default.json (replaced on every update).
+function Get-Config {
+    $config = Get-Content (Join-Path $dir "config.default.json") -Raw | ConvertFrom-Json
+    $localPath = Join-Path $dir "config.json"
+    if (Test-Path $localPath) {
+        $local = Get-Content $localPath -Raw | ConvertFrom-Json
+        foreach ($p in $local.PSObject.Properties) {
+            $config | Add-Member -Force -NotePropertyName $p.Name -NotePropertyValue $p.Value
+        }
+    }
+    return $config
+}
 
 function Show-Toast($title, $message) {
     try {
@@ -12,7 +25,7 @@ function Show-Toast($title, $message) {
         $texts.Item(0).AppendChild($template.CreateTextNode($title)) | Out-Null
         $texts.Item(1).AppendChild($template.CreateTextNode($message)) | Out-Null
         $toast = New-Object Windows.UI.Notifications.ToastNotification($template)
-        [Windows.UI.Notifications.ToastNotificationManager]::CreateToastNotifier("Release Test").Show($toast)
+        [Windows.UI.Notifications.ToastNotificationManager]::CreateToastNotifier("Atlas WBS").Show($toast)
     } catch {}
 }
 
@@ -21,8 +34,9 @@ function Say($message) {
 }
 
 try {
-    Say "Checking latest release of $repo ..."
-    $release = Invoke-RestMethod "https://api.github.com/repos/$repo/releases/latest"
+    $cfg = Get-Config
+    Say "Checking latest release of $($cfg.repo) ..."
+    $release = Invoke-RestMethod "$($cfg.apiBase)/repos/$($cfg.repo)/releases/latest"
     $latest = $release.tag_name.TrimStart("v")
 
     $manifestPath = Join-Path $dir "manifest.json"
@@ -40,15 +54,15 @@ try {
     if (-not $asset) { throw "no zip asset in the latest release" }
 
     Say "Updating v$current -> v$latest ..."
-    $tmp = Join-Path $env:TEMP "release_test_update.zip"
+    $tmp = Join-Path $env:TEMP "atlaswbs_update.zip"
     Invoke-WebRequest $asset.browser_download_url -OutFile $tmp
     Expand-Archive -Path $tmp -DestinationPath $dir -Force
     Remove-Item $tmp
 
     Say "DONE. Updated to v$latest."
-    Show-Toast "Release Test 업데이트 완료" "v$current → v$latest 적용 준비됨. 크롬을 재시작하면 반영됩니다."
+    Show-Toast "Atlas WBS 업데이트 완료" "v$current → v$latest 다운로드됨. 1분 안에 자동 적용됩니다."
 } catch {
     Say "Update failed: $_"
-    Show-Toast "Release Test 업데이트 실패" "인터넷 연결을 확인해 주세요. 다음에 다시 시도합니다."
+    Show-Toast "Atlas WBS 업데이트 실패" "인터넷 연결을 확인해 주세요. 다음에 다시 시도합니다."
     exit 1
 }
