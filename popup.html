@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <style>
+    body { min-width: 240px; padding: 16px; font-family: sans-serif; font-size: 13px; }
+    .row { margin-bottom: 8px; }
+    .label { color: #666; }
+    #status { font-weight: bold; }
+    #status.update { color: #c62828; }
+    #status.ok { color: #2e7d32; }
+    a { color: #1565c0; }
+    button { margin-top: 8px; padding: 4px 10px; }
+  </style>
+</head>
+<body>
+  <div class="row"><span class="label">설치된 버전:</span> <span id="current">-</span></div>
+  <div class="row"><span class="label">최신 버전:</span> <span id="latest">-</span></div>
+  <div class="row" id="status">확인 중...</div>
+  <div class="row" id="link-row" hidden>
+    <a id="release-link" href="#" target="_blank">새 버전 다운로드 →</a>
+  </div>
+  <button id="check">지금 확인</button>
+  <script src="popup.js"></script>
+</body>
+</html>

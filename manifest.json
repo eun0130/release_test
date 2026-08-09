@@ -3,8 +3,12 @@
   "name": "Release Test",
   "version": "0.0.0",
   "description": "Empty extension for testing the GitHub release pipeline",
+  "permissions": ["alarms", "storage"],
+  "host_permissions": ["https://api.github.com/*"],
   "background": {
     "service_worker": "app.js"
   },
-  "action": {}
+  "action": {
+    "default_popup": "popup.html"
+  }
 }
