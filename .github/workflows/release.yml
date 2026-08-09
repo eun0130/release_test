@@ -22,7 +22,7 @@ jobs:
           cat manifest.json
 
       - name: Build zip
-        run: zip -r release_test-${GITHUB_REF_NAME}.zip manifest.json app.js popup.html popup.js
+        run: zip -r release_test-${GITHUB_REF_NAME}.zip manifest.json app.js popup.html popup.js update.bat update.ps1
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
